@@ -81,96 +81,61 @@ const technologies = [
       "Bead Washing Machines",
 ];
 
-let height = 0;
+const WIDTH = 2550/2.1;
+const HEIGHT = 3300/2.1;
 
-class CheckBox extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+let x = 50;
+let y = 50;
+let em = 18;
 
-  render() {
-    return (
-      <div>
-        <input type="checkbox" id={this.props.id} name={this.props.id} />
-        <label for={this.props.id}>{this.props.label}</label>
-      </div>
-    );
-  }
+function preload() {
+
 }
 
-class CheckBoxes extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+function setup() {
+  createCanvas(WIDTH,HEIGHT);
 
-  render() {
-    let labels = [];
-    for (let i = 0; i < this.props.quantity; i++) {
-      labels.push(random(technologies));
-    }
-    const boxes = labels.map((label,index) => <CheckBox label={label} id={label + index} key={index} />);
+  // Base styling
+  background(250);
+  textFont(`monospace`);
+  textAlign(LEFT, TOP);
+  fill(0);
+  stroke(0);
 
-    return (
-      <fieldset>
-        {boxes}
-      </fieldset>
-    );
-  }
+  // Components
+  margins();
+  title();
+  introduction();
 }
 
-class Form extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+function margins() {
+  push();
+  noFill();
+  rect(x,y,width-2*x,height-2*y);
+  pop();
 
-  render() {
-    let fieldsets = [];
-    for (let i = 0; i < 10; i++) {
-      fieldsets = [...fieldsets, <CheckBoxes quantity={2} />];
-    }
-    return (
-      <div>
-        {fieldsets}
-      </div>
-    )
-  }
+  x += em;
+  y += em;
 }
 
-ReactDOM.render(<Form />, document.getElementById(`form`));
+function title() {
+  push();
+  textSize(24);
+  textStyle(BOLD);
+  text(random(technologies), x, y);
+  pop();
 
-// generateForms(1);
-//
-// function generateForms(number) {
-//   while ($(`body`).height() < 792) {
-//     $(`body`).append(checkBoxes(1));
-//   }
-// }
-//
-// function checkBoxes(number) {
-//   const fieldset = $(`<fieldset></fieldset>`);
-//
-//   for (var i = 0; i < number; i++) {
-//     let option = random(technologies);
-//     let name = `${option}-${i}`;
-//     let label = $(`<label for="${option}-${i}">${option}</label>`);
-//     let checkbox = $(`<input type="checkbox" id="${name}" name="${name}">`);
-//     let br = $(`<br>`)
-//
-//     fieldset.append(checkbox);
-//     fieldset.append(label);
-//     fieldset.append(br);
-//   }
-//   return fieldset;
-// }
-//
-// function getSentences(number) {
-//   let sentences = ``;
-//   for (let i = 0; i < number; i++) {
-//     sentences += random(positivity);
-//   }
-//   return sentences;
-// }
-//
-function random(array) {
-  return array[Math.floor(Math.random() * array.length)];
+  y += 2*em;
+}
+
+function introduction() {
+  let intro = ``;
+  for (let i = 0; i < 3; i++) {
+    intro += `${random(positivity)} `;
+  }
+
+  push();
+  textSize(18);
+  text(intro, x, y, width - 2*x, 100);
+  pop();
 }
