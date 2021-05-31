@@ -83,10 +83,13 @@ const technologies = [
 
 const WIDTH = 2550/2.1;
 const HEIGHT = 3300/2.1;
+const TOTAL_FORMS = 2;
 
 let x = 50;
 let y = 50;
 let em = 18;
+
+let formNum = 1;
 
 function preload() {
 
@@ -102,10 +105,24 @@ function setup() {
   fill(0);
   stroke(0);
 
-  // Components
+  // frameRate(1);
+}
+
+function draw() {
+  x = 0;
+  y = 0;
+
+  background(255);
   margins();
   title();
   introduction();
+
+  // saveCanvas(`form-${formNum}`, `png`);
+  formNum++;
+
+  if (formNum > TOTAL_FORMS) {
+    noLoop();
+  }
 }
 
 function margins() {
