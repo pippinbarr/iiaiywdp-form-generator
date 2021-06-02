@@ -164,12 +164,21 @@ function outerBox() {
 function introduction() {
   push();
   textSize(TEXT_HEIGHT);
-  let h = drawTexts([generateParagraph(3), generateParagraph(2)], x, y, width - 2*x);
+  y += drawTexts([generateParagraph(3), generateParagraph(2)], x, y, width - 2*x);
+  y += SPACING;
   pop();
 
-  y += h;
+  y += drawCheckboxes(x, y, width/2 - 2*x, 10);
+  y += SPACING;
 
-  drawCheckboxes(x, y, width - 2*x, 10);
+  y += drawDateEntry(x, y, width/2 - 2*x);
+  y += SPACING;
+
+  y += drawSignatureEntry(x, y, width/2 - 2*x);
+  y += SPACING;
+
+  y += drawStampEntry(x, y, width/2 - 2*x);
+  y += SPACING;
 }
 
 function drawText(string, x, y, w) {
@@ -203,6 +212,7 @@ function drawTexts(array, x, y, w) {
     y += h + SPACING;
     totalH += h + SPACING;
   }
+  totalH -= SPACING;
   return totalH;
 }
 
@@ -227,6 +237,7 @@ function drawCheckboxes(x, y, w, n) {
       tech = random(technologies);
     }
     techs.push(tech);
+
     let checkbox = `${CHECK} ${tech} `;
     if (textWidth(line + checkbox) > w) {
       checkboxes += `\n${checkbox} `;
@@ -238,22 +249,41 @@ function drawCheckboxes(x, y, w, n) {
       line += `${checkbox} `
     }
   }
-
-  let toCheck = ``;
-  for (let i = 0; i < techs.length; i++) {
-    if (Math.random() < 0.15) {
-      toCheck += `${techs[i]}, `;
-    }
-  }
+  let chooseTechs = techs.filter((item) => Math.random() < 0.15);
+  let toCheck = chooseTechs.join(`, `)
   if (toCheck === ``) {
-    toCheck = `${random(techs)}, `;
+    toCheck = `${random(techs)}`;
   }
-
-  toCheck = toCheck.replace(/,\s$/, ``);
 
   let textH = drawText(`CHOOSE ${toCheck}:`, x, y, w);
   y += textH + SPACING;
   text(checkboxes, x, y);
+
+  return h + textH + SPACING;
+}
+
+function drawDateEntry(x, y, w) {
+  let dateText = `DATE: __/__/____`;
+  return drawText(dateText, x, y, w);
+}
+
+function drawSignatureEntry(x, y, w) {
+  let signatureText = `SIGN HERE: ____________________`;
+  return drawText(signatureText, x, y, w);
+}
+
+function drawStampEntry(x, y, w) {
+  let stampText = `STAMP HERE to approve ${random(technologies)} working group:`;
+  let h = drawText(stampText, x, y, w);
+  y += h;
+  push();
+  noFill();
+  stroke(0);
+  strokeWeight(2);
+  rect(x, y, w, 100);
+  pop();
+  h += 200;
+  return h;
 }
 
 function textHeight() {
