@@ -11,7 +11,7 @@ const positivity = [
   "The best preparation for tomorrow is doing your best today.",
     "We must let go of the life we have planned, so as to accept the one that is waiting for us.",
     "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.",
-    "We can't change the direction of the wind, but Iwecan adjust my sails to always reach my destination.",
+    "We can't change the direction of the wind, but I can adjust my sails to always reach my destination.",
     "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work. And the only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle. As with all matters of the heart, you'll know when you find it.",
     "Put your heart, mind, and soul into even your smallest acts. This is the secret of success.",
     "Happiness is not something you postpone for the future; it is something you design for the present.",
@@ -84,10 +84,16 @@ const technologies = [
 const WIDTH = 2550/2.1;
 const HEIGHT = 3300/2.1;
 const TOTAL_FORMS = 2;
+const MARGIN = 25;
+const SPACING = 20;
 
-let x = 50;
-let y = 50;
-let em = 18;
+const TITLE_HEIGHT = 36;
+const TEXT_HEIGHT = 16;
+
+const CHECK = `⃞`;
+
+let x = MARGIN;
+let y = MARGIN;
 
 let formNum = 1;
 
@@ -100,8 +106,9 @@ function setup() {
 
   // Base styling
   background(250);
-  textFont(`monospace`);
+  textFont(`sans-serif`);
   textAlign(LEFT, TOP);
+  textSize(TEXT_HEIGHT);
   fill(0);
   stroke(0);
 
@@ -115,6 +122,7 @@ function draw() {
   background(255);
   margins();
   title();
+  outerBox();
   introduction();
 
   // saveCanvas(`form-${formNum}`, `png`);
@@ -126,33 +134,128 @@ function draw() {
 }
 
 function margins() {
-  push();
-  noFill();
-  rect(x,y,width-2*x,height-2*y);
-  pop();
-
-  x += em;
-  y += em;
+  x = MARGIN;
+  y = MARGIN;
 }
 
 function title() {
   push();
-  textSize(24);
+  textSize(TITLE_HEIGHT);
   textStyle(BOLD);
-  text(random(technologies), x, y);
+  let h = drawText(random(technologies).toUpperCase(), x, y, width - 2*x);
   pop();
 
-  y += 2*em;
+  y += h;
+  y += SPACING;
+}
+
+function outerBox() {
+  push();
+  noFill();
+  stroke(0);
+  strokeWeight(2);
+  rect(x,y,width-2*x,height-2*y);
+  pop();
+
+  x += MARGIN;
+  y += MARGIN;
 }
 
 function introduction() {
-  let intro = ``;
-  for (let i = 0; i < 3; i++) {
-    intro += `${random(positivity)} `;
+  push();
+  textSize(TEXT_HEIGHT);
+  let h = drawTexts([generateParagraph(3), generateParagraph(2)], x, y, width - 2*x);
+  pop();
+
+  y += h;
+
+  drawCheckboxes(x, y, width - 2*x, 10);
+}
+
+function drawText(string, x, y, w) {
+  let h = 0;
+  let words = string.split(/ /);
+  let result = ``;
+  let line = ``;
+  let height = textAscent() + textDescent();
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i];
+    let test = line + word + ` `;
+    if (textWidth(test) > w) {
+      result += `\n${word} `;
+      line = `${word} `;
+      height += textAscent() + textDescent();
+    }
+    else {
+      line += `${word} `;
+      result += `${word} `;
+    }
+  }
+  text(result, x, y);
+  return height;
+}
+
+function drawTexts(array, x, y, w) {
+  let totalH = 0;
+
+  for (let i = 0; i < array.length; i++) {
+    let h = drawText(array[i], x, y, w);
+    y += h + SPACING;
+    totalH += h + SPACING;
+  }
+  return totalH;
+}
+
+function generateParagraph(number) {
+  let result = ``;
+  for (let i = 0; i < number; i++) {
+    result += random(positivity) + ` `;
+  }
+  return result;
+}
+
+function drawCheckboxes(x, y, w, n) {
+  let h = 0;
+
+  let checkboxes = ``;
+  h += textHeight();
+  let line = ``;
+  let techs = [];
+  for (let i = 0; i < n; i++) {
+    let tech = random(technologies);
+    while (techs.indexOf(tech) !== -1) {
+      tech = random(technologies);
+    }
+    techs.push(tech);
+    let checkbox = `${CHECK} ${tech} `;
+    if (textWidth(line + checkbox) > w) {
+      checkboxes += `\n${checkbox} `;
+      line = `${checkbox} `;
+      h += textHeight();
+    }
+    else {
+      checkboxes += `${checkbox} `;
+      line += `${checkbox} `
+    }
   }
 
-  push();
-  textSize(18);
-  text(intro, x, y, width - 2*x, 100);
-  pop();
+  let toCheck = ``;
+  for (let i = 0; i < techs.length; i++) {
+    if (Math.random() < 0.15) {
+      toCheck += `${techs[i]}, `;
+    }
+  }
+  if (toCheck === ``) {
+    toCheck = `${random(techs)}, `;
+  }
+
+  toCheck = toCheck.replace(/,\s$/, ``);
+
+  let textH = drawText(`CHOOSE ${toCheck}:`, x, y, w);
+  y += textH + SPACING;
+  text(checkboxes, x, y);
+}
+
+function textHeight() {
+  return textAscent() + textDescent();
 }
