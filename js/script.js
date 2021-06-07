@@ -86,14 +86,17 @@ const HEIGHT = 3300/2.1;
 const TOTAL_FORMS = 2;
 const MARGIN = 25;
 const SPACING = 20;
+const DEFAULT_PADDING = 10;
 
 const TITLE_HEIGHT = 36;
-const TEXT_HEIGHT = 16;
+const TEXT_HEIGHT = 18;
 
 const CHECK = `⃞`;
 
 let x = MARGIN;
 let y = MARGIN;
+
+let sectionNum = 1;
 
 let formNum = 1;
 
@@ -118,12 +121,16 @@ function setup() {
 function draw() {
   x = 0;
   y = 0;
+  sectionNum = 1;
 
   background(255);
   margins();
-  title();
   outerBox();
+  title();
   introduction();
+
+  stroke(0);
+  // line(width/2,0,width/2,height);
 
   // saveCanvas(`form-${formNum}`, `png`);
   formNum++;
@@ -134,19 +141,20 @@ function draw() {
 }
 
 function margins() {
-  x = MARGIN;
-  y = MARGIN;
+  // x = MARGIN;
+  // y = MARGIN;
 }
 
 function title() {
   push();
   textSize(TITLE_HEIGHT);
   textStyle(BOLD);
-  let h = drawText(random(technologies).toUpperCase(), x, y, width - 2*x);
+  let h = drawText(random(technologies).toUpperCase(), x, y, width);
   pop();
 
   y += h;
-  y += SPACING;
+  drawLine(x, y, x + width, y);
+
 }
 
 function outerBox() {
@@ -154,43 +162,98 @@ function outerBox() {
   noFill();
   stroke(0);
   strokeWeight(2);
-  rect(x,y,width-2*x,height-2*y);
+  rect(x+1,y+1,width-2,height-2);
   pop();
+}
 
-  x += MARGIN;
-  y += MARGIN;
+function drawLine(x, y, x2, y2) {
+  push();
+  stroke(0);
+  strokeWeight(2);
+  line(x, y, x2, y2);
+  pop();
 }
 
 function introduction() {
   push();
   textSize(TEXT_HEIGHT);
-  y += drawTexts([generateParagraph(3), generateParagraph(2)], x, y, width - 2*x);
-  y += SPACING;
+  y += drawTexts([generateParagraph(3), generateParagraph(2)], x, y, width);
   pop();
 
-  y += drawCheckboxes(x, y, width/2 - 2*x, 10);
-  y += SPACING;
+  const formTop = y;
 
-  y += drawDateEntry(x, y, width/2 - 2*x);
-  y += SPACING;
+  drawLine(x, y, x + width, y);
+  drawLine(x + width/2, y, x + width/2, height);
 
-  y += drawSignatureEntry(x, y, width/2 - 2*x);
-  y += SPACING;
+  y += drawCheckboxes(x, y, width/2, 10);
 
-  y += drawStampEntry(x, y, width/2 - 2*x);
-  y += SPACING;
+  drawLine(x, y, x + width/2, y);
+
+  y += drawDateEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawSignatureEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawStampEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawNumbersEntry(x, y, width/2, 5);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawHighlightTexts([generateParagraph(2), generateParagraph(5)], x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawStampEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawNumbersEntry(x, y, width/2, 2);
+  drawLine(x, y, x + width/2, y);
+
+  x = width/2;
+  y = formTop;
+
+  y += drawCheckboxes(x, y, width/2, 10);
+
+  drawLine(x, y, x + width/2, y);
+
+  y += drawStampEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawNumbersEntry(x, y, width/2, 2);
+  drawLine(x, y, x + width/2, y);
+
+
+  y += drawNumbersEntry(x, y, width/2, 5);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawHighlightTexts([generateParagraph(2), generateParagraph(5)], x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawStampEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawDateEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
+
+  y += drawSignatureEntry(x, y, width/2);
+  drawLine(x, y, x + width/2, y);
 }
 
-function drawText(string, x, y, w) {
-  let h = 0;
+function drawText(string, x, y, w, padding = DEFAULT_PADDING, style = NORMAL) {
+  push();
+  textStyle(style);
+  noStroke();
   let words = string.split(/ /);
   let result = ``;
   let line = ``;
-  let height = textAscent() + textDescent();
+  let height = textAscent() + textDescent() + 2*padding;
+  x += padding;
+  y += padding;
   for (let i = 0; i < words.length; i++) {
     let word = words[i];
     let test = line + word + ` `;
-    if (textWidth(test) > w) {
+    if (textWidth(test) > w - 2*padding) {
       result += `\n${word} `;
       line = `${word} `;
       height += textAscent() + textDescent();
@@ -200,20 +263,39 @@ function drawText(string, x, y, w) {
       result += `${word} `;
     }
   }
-  text(result, x, y);
+  text(result, x, y)
+  pop();
   return height;
 }
 
-function drawTexts(array, x, y, w) {
+function drawTexts(array, x, y, w, padding = DEFAULT_PADDING) {
   let totalH = 0;
 
   for (let i = 0; i < array.length; i++) {
-    let h = drawText(array[i], x, y, w);
-    y += h + SPACING;
-    totalH += h + SPACING;
+    let h = drawText(array[i], x, y, w, padding);
+    y += h;
+    totalH += h;
   }
-  totalH -= SPACING;
   return totalH;
+}
+
+function drawHighlightTexts(array, x, y, w, padding = DEFAULT_PADDING) {
+  let totalHeight = 0;
+  totalHeight += drawText(`${sectionNum}. HIGHLIGHT the words inside parentheses`, x, y, w, padding, BOLD);
+  sectionNum++;
+  y += totalHeight;
+  for (let i = 0; i < array.length; i++) {
+    let words = array[i].split(` `);
+    for (let j = 0; j < words.length; j++) {
+      let last = words[j][words[j].length-1];
+      if (Math.random() < 0.1 && !`.,:'"?!%`.includes(last)) {
+        words[j] = `<${words[j]}>`
+      }
+    }
+    array[i] = words.join(` `);
+  }
+  totalHeight += drawTexts(array, x, y, w, padding);
+  return totalHeight;
 }
 
 function generateParagraph(number) {
@@ -224,11 +306,12 @@ function generateParagraph(number) {
   return result;
 }
 
-function drawCheckboxes(x, y, w, n) {
+function drawCheckboxes(x, y, w, n, padding = DEFAULT_PADDING) {
+  push();
   let h = 0;
 
   let checkboxes = ``;
-  h += textHeight();
+  h += textHeight() + padding;
   let line = ``;
   let techs = [];
   for (let i = 0; i < n; i++) {
@@ -239,7 +322,7 @@ function drawCheckboxes(x, y, w, n) {
     techs.push(tech);
 
     let checkbox = `${CHECK} ${tech} `;
-    if (textWidth(line + checkbox) > w) {
+    if (textWidth(line + checkbox) > w - 2*padding) {
       checkboxes += `\n${checkbox} `;
       line = `${checkbox} `;
       h += textHeight();
@@ -255,34 +338,97 @@ function drawCheckboxes(x, y, w, n) {
     toCheck = `${random(techs)}`;
   }
 
-  let textH = drawText(`CHOOSE ${toCheck}:`, x, y, w);
+  let textH = drawText(`${sectionNum}. SELECT ${toCheck}:`, x, y, w, padding, BOLD);
+  sectionNum++;
   y += textH + SPACING;
+
+  x += padding;
+  textStyle(NORMAL);
+  noStroke();
   text(checkboxes, x, y);
+  pop();
 
   return h + textH + SPACING;
 }
 
-function drawDateEntry(x, y, w) {
-  let dateText = `DATE: __/__/____`;
-  return drawText(dateText, x, y, w);
+function drawDateEntry(x, y, w, padding = DEFAULT_PADDING) {
+  let dateText = `${sectionNum}. ENTER DATE: __/__/____`;
+  sectionNum++;
+  return drawText(dateText, x, y, w, padding, BOLD);
 }
 
-function drawSignatureEntry(x, y, w) {
-  let signatureText = `SIGN HERE: ____________________`;
-  return drawText(signatureText, x, y, w);
+function drawSignatureEntry(x, y, w, padding = DEFAULT_PADDING) {
+  let signatureText = `${sectionNum}. SIGN HERE: ____________________`;
+  sectionNum++;
+  return drawText(signatureText, x, y, w, padding, BOLD);
 }
 
-function drawStampEntry(x, y, w) {
-  let stampText = `STAMP HERE to approve ${random(technologies)} working group:`;
-  let h = drawText(stampText, x, y, w);
+function drawNumbersEntry(x, y, w, n, padding = DEFAULT_PADDING) {
+  const x1 = x;
+  const y1 = y;
+
+  x += padding;
+
+  let totalHeight = 0;
+  push();
+  let toCount = Math.random() < 0.5 ? `words` : `letters`;
+  totalHeight += drawText(`${sectionNum}. ENTER the number of ${toCount} in the first column into the second column`, x, y, w, padding, BOLD)
+  sectionNum++;
+  y += totalHeight;
+  for (let i = 0; i < n; i++) {
+    noStroke();
+    fill(0);
+    let h = drawText(random(technologies), x, y, w/2 - padding, padding);
+
+    stroke(0);
+    strokeWeight(2);
+    noFill();
+    rect(x,y,w/2 - padding,h);
+    rect(x + w/2 - padding,y,w/2 - padding,h);
+
+    y += h;
+    totalHeight += h;
+  }
+  pop();
+
+  totalHeight += SPACING;
+
+  push();
+  stroke(0);
+  strokeWeight(2);
+  line(x1, y1 + totalHeight, x1 + w, y1 + totalHeight);
+  pop();
+
+  return totalHeight;
+}
+
+function drawStampEntry(x, y, w, padding = 10) {
+  const x1 = x;
+  const y1 = y;
+
+  const stampHeight = 100;
+  let stampText = `${sectionNum}. STAMP HERE to approve ${random(technologies)} working group:`;
+  sectionNum++;
+  let h = drawText(stampText, x, y, w, padding, BOLD);
   y += h;
+  x += padding;
+
   push();
   noFill();
   stroke(0);
   strokeWeight(2);
-  rect(x, y, w, 100);
+  rect(x, y, w - 2*padding, stampHeight);
   pop();
-  h += 200;
+  h += stampHeight;
+
+  h += SPACING;
+
+  push();
+  stroke(0);
+  strokeWeight(2);
+  line(x1, y1 + h, x1 + w, y1 + h);
+  pop();
+
   return h;
 }
 
