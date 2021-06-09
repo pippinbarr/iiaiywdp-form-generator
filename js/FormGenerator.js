@@ -196,6 +196,7 @@ function FormGenerator(p) {
       let generator = p.random(generators);
       let element = generator(WIDTH/2);
       if (y + element.height > HEIGHT) {
+        element.remove();
         if (spins < 20) {
           spins++;
           continue;
