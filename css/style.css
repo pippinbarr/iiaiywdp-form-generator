@@ -1,14 +1,9 @@
 html, body {
   margin: 0;
   padding: 0;
+  font-size: 14px;
+  font-family: Helvetica, sans-serif;
 }
-
-/* canvas {
-  display: block;
-  margin: 0;
-  padding: 0;
-  page-break-after: always;
-} */
 
 .page {
   /* display: block; */
@@ -17,15 +12,20 @@ html, body {
   margin: 0;
   padding: 0;
   page-break-after: always;
-  /* border: 2px solid black; */
-  /* overflow: hidden; */
 }
 
 .form {
   margin: 1em;
-  font-family: sans-serif;
-  font-size: 12px;
-  border: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.header {
+  font-weight: bold;
+  font-size: 2em;
+  padding: 18px;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
 }
 
 #tasks {
@@ -38,14 +38,18 @@ html, body {
 .column {
   padding: 0;
   margin: 0;
-  /* border-bottom: 1px solid black; */
-  /* border-right: 1px solid black; */
+  display: grid;
 }
 
 .task {
   padding: 1em;
-  /* border-top: 1px solid black; */
-  /* border-left: 1px solid black; */
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+}
+
+.section-heading {
+  font-weight: bold;
+  margin-bottom: 0.5em;
 }
 
 .checkboxes {
@@ -63,16 +67,20 @@ html, body {
 .numbers-table {
   display: grid;
   grid-template-columns: auto 3em;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
 }
 
 .numbers-entry {
-  border: 2px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  padding: 0.25em;
 }
 
 .stamp-area {
   width: 100%;
   height: 5em;
-  border: 2px solid black;
+  border: 2px dashed black;
 }
 
 @page{
