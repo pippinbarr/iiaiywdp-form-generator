@@ -67,7 +67,7 @@ function formPurpose() {
 
 function column($tasks,$page,$form) {
 
-  const generators = [date, checkboxes, highlighter, signature, counting, stamp, initial, read, adding];
+  const generators = [date, checkboxes, highlighter, signature, counting, stamp, initial, read, adding, yesno];
 
   let $col = $(`<div class="column"></div>`);
   $tasks.append($col);
@@ -89,10 +89,7 @@ function checkboxes() {
   for (let i = 0; i < n; i++) {
     let tech = random(technologies);
     techs.push(tech);
-    let $checkbox = $(`<span class="checkbox"></span>`)
-    $checkbox.append(`<input type="checkbox" id="checkbox-${i}" name="checkbox-${i}" value="${tech}">`);
-    $checkbox.append(`<label for="checkbox-${i}">${tech}</label><br />`);
-    $checkboxes.append($checkbox);
+    $checkboxes.append(checkbox(tech,i));
   }
   let selections = techs.filter(tech => Math.random() < 0.2);
   if (selections.length === 0) {
@@ -102,6 +99,25 @@ function checkboxes() {
   $checkboxes.prepend($instruction);
 
   return $checkboxes;
+}
+
+function yesno() {
+  let $yesno = $(`<div class="task yesno"></div>`);
+  $yesno.append(checkbox(`Yes`,1));
+  $yesno.append(checkbox(`No`,2));
+  let selection = random([`Yes`,`No`]);
+  let $instruction = sectionHeading(`Select ${selection}`);
+  $yesno.prepend($instruction);
+
+  return $yesno;
+}
+
+
+function checkbox(label, id) {
+  let $checkbox = $(`<span class="checkbox"></span>`)
+  $checkbox.append(`<input type="checkbox" id="checkbox-${id}" name="checkbox-${id}" value="${label}">`);
+  $checkbox.append(`<label for="checkbox-${id}">${label}</label><br />`);
+  return $checkbox;
 }
 
 function highlighter() {

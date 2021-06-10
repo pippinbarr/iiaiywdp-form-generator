@@ -5,3 +5,4 @@
 
 * Writing words
   * Technologies I guess
+* Add some of the Chess instructions - work environment things to do while going through the form so you can play along
