@@ -5,4 +5,3 @@
 
 * Writing words
   * Technologies I guess
-* Initials
