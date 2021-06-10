@@ -39,7 +39,11 @@ function formID() {
   let length = Math.floor(Math.random() * 10) + 1;
   let id = ``;
   for (let i = 0; i < length; i++) {
-    id += Math.random() < 0.75 ? random(alphabet) : random(numbers);
+    let char = Math.random() < 0.75 ? random(alphabet) : random(numbers);
+    if (Math.random() < 0.2 && i > 0 && i < length-1) {
+      char = `/`;
+    }
+    id += char;
   }
   return id.toUpperCase();
 }
@@ -146,7 +150,8 @@ function numbers() {
   $numbers.append($instruction);
 
   let $table = $(`<div class="numbers-table"></div>`);
-  for (let i = 0; i < 3; i++) {
+  let n = Math.floor(Math.random() * 3) + 3;
+  for (let i = 0; i < n; i++) {
     let $row = $(`<div class="numbers-entry">${random(technologies)}</div><div class="numbers-entry"></div>`);
     $table.append($row);
   }
