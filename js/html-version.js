@@ -1,3 +1,5 @@
+const NUM_FORMS = 100;
+
 let technologies;
 let positivity;
 let groups;
@@ -7,12 +9,10 @@ $.getJSON(`assets/data/en.json`, (data) => {
   positivity = data.inspirationalQuotes;
   groups = data.groups;
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < NUM_FORMS; i++) {
     form();
   }
 });
-
-
 
 function form() {
   section = 1;
