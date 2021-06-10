@@ -1,4 +1,9 @@
 {
+  "groups": [
+    "Working Group",
+    "Committee",
+    "Review Board"
+  ],
   "technologies": [
     "3D Displays",
     "3D Optical Data Storage",

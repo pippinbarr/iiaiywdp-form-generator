@@ -64,17 +64,24 @@ html, body {
   text-decoration: underline;
 }
 
-.numbers-table {
+.table {
   display: grid;
-  grid-template-columns: auto 3em;
   border-bottom: 1px solid black;
   border-right: 1px solid black;
 }
 
-.numbers-entry {
+.table-entry {
   border-top: 1px solid black;
   border-left: 1px solid black;
   padding: 0.25em;
+}
+
+.counting-table {
+  grid-template-columns: auto 3em;
+}
+
+.adding-table {
+  grid-template-columns: 50% 50%;
 }
 
 .stamp-area {

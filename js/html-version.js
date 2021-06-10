@@ -1,9 +1,11 @@
 let technologies;
 let positivity;
+let groups;
 
 $.getJSON(`assets/data/en.json`, (data) => {
   technologies = data.technologies;
   positivity = data.inspirationalQuotes;
+  groups = data.groups;
 
   for (let i = 0; i < 20; i++) {
     form();
@@ -65,7 +67,7 @@ function formPurpose() {
 
 function column($tasks,$page,$form) {
 
-  const generators = [date, checkboxes, highlighter, signature, numbers, stamp, initial, read];
+  const generators = [date, checkboxes, highlighter, signature, counting, stamp, initial, read, adding];
 
   let $col = $(`<div class="column"></div>`);
   $tasks.append($col);
@@ -144,27 +146,45 @@ function signature() {
   return $date;
 }
 
-function numbers() {
-  let $numbers = $(`<div class="task numbers"></div>`);
+function counting() {
+  let counting = $(`<div class="task counting"></div>`);
   let target = Math.random() < 0.5 ? `words` : `characters`;
   let $instruction = sectionHeading(`Write the number of ${target} in the left column into the right column`);
-  $numbers.append($instruction);
+  counting.append($instruction);
 
-  let $table = $(`<div class="numbers-table"></div>`);
+  let $table = $(`<div class="table counting-table"></div>`);
   let n = Math.floor(Math.random() * 3) + 3;
   for (let i = 0; i < n; i++) {
-    let $row = $(`<div class="numbers-entry">${random(technologies)}</div><div class="numbers-entry"></div>`);
+    let $row = $(`<div class="table-entry">${random(technologies)}</div><div class="table-entry"></div>`);
     $table.append($row);
   }
-  $numbers.append($table);
+  counting.append($table);
 
-  return $numbers;
+  return counting;
+}
+
+function adding() {
+  let adding = $(`<div class="task adding"></div>`);
+  let target = Math.random() < 0.5 ? `words` : `characters`;
+  let add = 1 + Math.floor(Math.random() * 5);
+  let $instruction = sectionHeading(`Add ${add} to the number in the left column and write it in the right column`);
+  adding.append($instruction);
+
+  let $table = $(`<div class="table adding-table"></div>`);
+  let n = Math.floor(Math.random() * 3) + 3;
+  for (let i = 0; i < n; i++) {
+    let $row = $(`<div class="table-entry">${Math.floor(Math.random() * 100000) + 1}</div><div class="table-entry"></div>`);
+    $table.append($row);
+  }
+  adding.append($table);
+
+  return adding;
 }
 
 function stamp() {
   let $stamp = $(`<div class="task stamp"></div>`);
-  let action = Math.random() < 0.5 ? `approve` : `reject`;
-  let $instruction = sectionHeading(`Stamp below to ${action} the ${random(technologies)} Working Group`);
+  let action = `reject or approve`;
+  let $instruction = sectionHeading(`Stamp below to ${action} the ${random(technologies)} ${random(groups)}`);
   $stamp.append($instruction);
 
   let $stampArea = $(`<div class="stamp-area"></div>`);
