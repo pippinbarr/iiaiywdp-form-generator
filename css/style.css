@@ -6,7 +6,7 @@ html, body {
 }
 
 .page {
-  /* display: block; */
+  display: block;
   width: 8.5in;
   height: 10.5in;
   margin: 0;
@@ -22,8 +22,8 @@ html, body {
 
 .header {
   font-weight: bold;
-  font-size: 2em;
-  padding: 18px;
+  font-size: 1.5em;
+  padding: 1em;
   border-top: 1px solid black;
   border-left: 1px solid black;
 }

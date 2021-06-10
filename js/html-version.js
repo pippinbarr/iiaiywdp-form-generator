@@ -29,10 +29,35 @@ function form() {
 }
 
 function title() {
-  let title = $(`<div class="header">${random(technologies)}</div>`);
+  let title = $(`<div class="header">Form ${formID()}: ${formPurpose()} ${random(technologies)}</div>`);
   return title;
 }
 
+function formID() {
+  let alphabet = "abcdefghijklmnopqrstuvwxyz";
+  let numbers = "0123456789";
+  let length = Math.floor(Math.random() * 10) + 1;
+  let id = ``;
+  for (let i = 0; i < length; i++) {
+    id += Math.random() < 0.75 ? random(alphabet) : random(numbers);
+  }
+  return id.toUpperCase();
+}
+
+function formPurpose() {
+  const purposes = [
+    `Authorization of`,
+    `Committee Report on`,
+    `Implications of`,
+    `Task Force Report on`,
+    `Report on`,
+    `Evaluation of`,
+    `Rationale for`,
+    `Hazards of`,
+    `Special Assessment of`
+  ];
+  return random(purposes);
+}
 
 function column($tasks,$page,$form) {
 
