@@ -146,7 +146,8 @@ function signature() {
 
 function numbers() {
   let $numbers = $(`<div class="task numbers"></div>`);
-  let $instruction = sectionHeading(`Write the number of words in the left column into the right column`);
+  let target = Math.random() < 0.5 ? `words` : `characters`;
+  let $instruction = sectionHeading(`Write the number of ${target} in the left column into the right column`);
   $numbers.append($instruction);
 
   let $table = $(`<div class="numbers-table"></div>`);
