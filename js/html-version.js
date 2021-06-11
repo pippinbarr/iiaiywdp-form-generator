@@ -1,5 +1,12 @@
 const NUM_FORMS = 100;
 
+// Tracking repeated instructions
+let duplicatesAction = `filed`;
+let initialAction = `Initial`;
+let signatureAction = `Sign`;
+let dateModifier = `a`;
+let dates = [`today's`, `tomorrow's`, `yesterday's`];
+
 let technologies;
 let positivity;
 let groups;
@@ -17,6 +24,12 @@ $.getJSON(`assets/data/en.json`, (data) => {
 function form() {
   section = 1;
 
+  duplicatesAction = `filed`;
+  initialAction = `Initial`;
+  signatureAction = `Sign`;
+  dateModifier = `a`;
+  dates = [`today's`, `tomorrow's`, `yesterday's`];
+
   let $page = $(`<div class="page"></div>`);
   let $form = $(`<div class="form"></div>`);
   let $tasks = $(`<div id="tasks"></div>`)
@@ -26,8 +39,8 @@ function form() {
   $form.append(title());
   $form.append($tasks);
 
-  column($tasks,$page,$form);
-  column($tasks,$page,$form);
+  column(true, $tasks,$page,$form);
+  column(false, $tasks,$page,$form);
 }
 
 function title() {
@@ -65,12 +78,18 @@ function formPurpose() {
   return random(purposes);
 }
 
-function column($tasks,$page,$form) {
+function column(first,$tasks,$page,$form) {
+  const generators = [circleNumber, reference, duplicates, date, checkboxes, highlighter, signature, counting, stamp, initial, read, adding, yesno];
 
-  const generators = [date, checkboxes, highlighter, signature, counting, stamp, initial, read, adding, yesno];
 
   let $col = $(`<div class="column"></div>`);
   $tasks.append($col);
+
+  if (first) {
+    $col.append(employeeID());
+    $col.append(date());
+  }
+
   while ($form.outerHeight(true) < $page.outerHeight(true)) {
     let generator = random(generators);
     let $element = generator();
@@ -95,7 +114,7 @@ function checkboxes() {
   if (selections.length === 0) {
     selections = [random(techs)];
   }
-  let $instruction = sectionHeading(`Select ${selections.join(`, `)}`);
+  let $instruction = sectionHeading(`Select ${selections.join(`, `)}.`);
   $checkboxes.prepend($instruction);
 
   return $checkboxes;
@@ -106,12 +125,11 @@ function yesno() {
   $yesno.append(checkbox(`Yes`,1));
   $yesno.append(checkbox(`No`,2));
   let selection = random([`Yes`,`No`]);
-  let $instruction = sectionHeading(`Select ${selection}`);
+  let $instruction = sectionHeading(`Select ${selection}.`);
   $yesno.prepend($instruction);
 
   return $yesno;
 }
-
 
 function checkbox(label, id) {
   let $checkbox = $(`<span class="checkbox"></span>`)
@@ -122,7 +140,7 @@ function checkbox(label, id) {
 
 function highlighter() {
   let $highlighter = $(`<div class="task highlighter"></div>`);
-  let $instruction = sectionHeading(`Highlight the underlined words`);
+  let $instruction = sectionHeading(`Highlight the underlined words.`);
   $highlighter.append($instruction);
 
   let para = generateParagraph();
@@ -148,7 +166,11 @@ function highlighter() {
 
 function date() {
   let $date = $(`<div class="task date"></div>`);
-  let $instruction = sectionHeading(`Date: __/__/____`);
+  dates.sort((a,b) => Math.random() - 2);
+  dateModifier = dates.pop();
+  if (!dateModifier) dateModifier = `any`;
+  let $instruction = sectionHeading(`Write ${dateModifier} date: __/__/____`);
+  dateModifier = `another`;
   $date.append($instruction);
 
   return $date;
@@ -156,7 +178,8 @@ function date() {
 
 function signature() {
   let $date = $(`<div class="task signature"></div>`);
-  let $instruction = sectionHeading(`Sign here: _____________________`);
+  let $instruction = sectionHeading(`${signatureAction} here: _____________________`);
+  signatureAction = `Re-${signatureAction.toLowerCase()}`;
   $date.append($instruction);
 
   return $date;
@@ -165,7 +188,7 @@ function signature() {
 function counting() {
   let counting = $(`<div class="task counting"></div>`);
   let target = Math.random() < 0.5 ? `words` : `characters`;
-  let $instruction = sectionHeading(`Write the number of ${target} in the left column into the right column`);
+  let $instruction = sectionHeading(`Write the number of ${target} in the left column into the right column.`);
   counting.append($instruction);
 
   let $table = $(`<div class="table counting-table"></div>`);
@@ -183,7 +206,7 @@ function adding() {
   let adding = $(`<div class="task adding"></div>`);
   let target = Math.random() < 0.5 ? `words` : `characters`;
   let add = 1 + Math.floor(Math.random() * 5);
-  let $instruction = sectionHeading(`Add ${add} to the number in the left column and write it in the right column`);
+  let $instruction = sectionHeading(`Add ${add} to the number in the left column and write it in the right column.`);
   adding.append($instruction);
 
   let $table = $(`<div class="table adding-table"></div>`);
@@ -200,7 +223,7 @@ function adding() {
 function stamp() {
   let $stamp = $(`<div class="task stamp"></div>`);
   let action = `reject or approve`;
-  let $instruction = sectionHeading(`Stamp below to ${action} the ${random(technologies)} ${random(groups)}`);
+  let $instruction = sectionHeading(`Stamp below to ${action} the ${random(technologies)} ${random(groups)}.`);
   $stamp.append($instruction);
 
   let $stampArea = $(`<div class="stamp-area"></div>`);
@@ -211,7 +234,8 @@ function stamp() {
 
 function initial() {
   let $initial = $(`<div class="task initial"></div>`);
-  let $instruction = sectionHeading(`Initial here: ________`);
+  let $instruction = sectionHeading(`${initialAction} here: ________`);
+  initialAction = `Re-${initialAction.toLowerCase()}`;
   $initial.append($instruction);
 
   return $initial;
@@ -219,13 +243,51 @@ function initial() {
 
 function read() {
   let $read = $(`<div class="task read"></div>`)
-  let $instruction = sectionHeading(`Read this`);
+  let $instruction = sectionHeading(`Read the following text closely.`);
   $read.append($instruction);
 
   let paragraph = generateParagraph();
   $read.append(`<div>${paragraph}</div>`);
 
   return $read;
+}
+
+function duplicates() {
+  let $duplicates = $(`<div class="task duplicates"></div>`);
+  let $instruction = sectionHeading(`Circle the number of copies to make of this form when ${duplicatesAction}.`);
+  duplicatesAction = `re${duplicatesAction}`;
+  $duplicates.append($instruction);
+
+  let $options = $(`<div>triplicate / duplicate / single copy</div>`);
+  $duplicates.append($options);
+
+  return $duplicates;
+}
+
+function reference() {
+  let $reference = $(`<div class="task reference"></div>`);
+  let $instruction = sectionHeading(`Write the form reference ${formID()} below.`);
+  $reference.append($instruction);
+  $reference.append(`<div>_______________________</div>`);
+
+  return $reference;
+}
+
+function employeeID() {
+  let $id = $(`<div class="task id"></div>`);
+  let $instruction = sectionHeading(`Enter your employee ID: ____________`);
+  $id.append($instruction);
+
+  return $id;
+}
+
+function circleNumber() {
+  let $circleNumber = $(`<div class="task circle-number"></div>`);
+  let $instruction = sectionHeading(`Circle the number ${Math.floor(Math.random() * 9) + 1} below.`);
+  $circleNumber.append($instruction);
+  $circleNumber.append(`<div>${"123456789".split(``).join(`&nbsp&nbsp&nbsp&nbsp&nbsp`)}</div>`);
+
+  return $circleNumber;
 }
 
 function generateParagraph() {
