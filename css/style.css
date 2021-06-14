@@ -33,6 +33,14 @@ html, body {
   border-left: var(--default-border);
 }
 
+.title-form-id {
+  background-color: black;
+  color: white;
+  padding: 0.1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
 #tasks {
   padding: 0;
   margin: 0;
@@ -55,6 +63,20 @@ html, body {
 .section-heading {
   font-weight: bold;
   margin-bottom: 0.5em;
+  display: grid;
+  grid-template-columns: 2em auto;
+}
+
+.section-number {
+  background-color: black;
+  color: white;
+  padding: 0.25em;
+  margin-left: -0.5em;
+  margin-top: -0.5em;
+  margin-right: 1em;
+  width: 1em;
+  height: 1em;
+  text-align: center;
 }
 
 .checkboxes {

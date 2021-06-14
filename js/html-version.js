@@ -50,7 +50,7 @@ function form() {
 }
 
 function title() {
-  let title = $(`<div class="title">Form ${formID()}: ${formPurpose()} ${random(technologies)}</div>`);
+  let title = $(`<div class="title">Form <span class="title-form-id">${formID()}</span> : ${formPurpose()} ${random(technologies)}</div>`);
   return title;
 }
 
@@ -336,9 +336,9 @@ function random(array) {
 }
 
 function sectionHeading(string) {
-   return $(`<div class="section-heading">${getSection()} ${string}</div>`);
+   return $(`<div class="section-heading"><span><div class="section-number">${getSection()}</div></span><span>${string}</span></div>`);
 }
 
 function getSection() {
-  return `${section++}.`;
+  return `${section++}`;
 }
