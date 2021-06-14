@@ -124,6 +124,23 @@ html, body {
   grid-template-columns: 50% 50%;
 }
 
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  border-top: var(--default-border);
+  border-left: var(--default-border);
+  /* place-items: center; */
+}
+
+.number {
+  border-bottom: var(--default-border);
+  border-right: var(--default-border);
+  text-align: center;
+  padding-top: 0.5em;
+  /* vertical-align: middle; */
+  height: 1.5em;
+}
+
 .stamp-area {
   height: 5em;
   border: 1px dashed black;

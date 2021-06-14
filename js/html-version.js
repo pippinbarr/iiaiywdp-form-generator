@@ -283,7 +283,7 @@ function duplicates() {
 
 function reference() {
   let $reference = $(`<div class="task reference"></div>`);
-  let $instruction = sectionHeading(`Enter the form reference ${formID()} into the box below.`);
+  let $instruction = sectionHeading(`Copy the form reference ${formID()} into the box below.`);
 
   $reference.append($instruction);
   $reference.append(box());
@@ -299,7 +299,7 @@ function box(text = ``) {
 
 function employeeID() {
   let $id = $(`<div class="task id"></div>`);
-  let $instruction = sectionHeading(`Enter your employee ID in the box below.`);
+  let $instruction = sectionHeading(`Enter your employee ID below.`);
   $id.append($instruction);
   $id.append(box());
 
@@ -310,7 +310,15 @@ function circleNumber() {
   let $circleNumber = $(`<div class="task circle-number"></div>`);
   let $instruction = sectionHeading(`Circle the number ${Math.floor(Math.random() * 9) + 1} below.`);
   $circleNumber.append($instruction);
-  $circleNumber.append(`<div>${"123456789".split(``).join(`&nbsp&nbsp&nbsp&nbsp&nbsp`)}</div>`);
+
+  let numbers = "123456789".split(``);
+  let $numbers = $(`<div class="numbers"></div>`);
+  for (let i = 0; i < numbers.length; i++) {
+    let $number = $(`<div class="number">${numbers[i]}<div>`);
+    $numbers.append($number);
+  }
+  $circleNumber.append($numbers);
+  // $circleNumber.append(`<div>${"123456789".split(``).join(`&nbsp&nbsp&nbsp&nbsp&nbsp`)}</div>`);
 
   return $circleNumber;
 }
