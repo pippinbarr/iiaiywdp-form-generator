@@ -177,18 +177,20 @@ function date() {
   dates.sort((a,b) => Math.random() - 2);
   dateModifier = dates.pop();
   if (!dateModifier) dateModifier = `any`;
-  let $instruction = sectionHeading(`Write ${dateModifier} date: __/__/____`);
+  let $instruction = sectionHeading(`Write ${dateModifier} date in the box below.`);
   dateModifier = `another`;
   $date.append($instruction);
+  $date.append(box(``))
 
   return $date;
 }
 
 function signature() {
   let $date = $(`<div class="task signature"></div>`);
-  let $instruction = sectionHeading(`${signatureAction} here: _____________________`);
+  let $instruction = sectionHeading(`${signatureAction} in the box below.`);
   signatureAction = `Re-${signatureAction.toLowerCase()}`;
   $date.append($instruction);
+  $date.append(box());
 
   return $date;
 }
@@ -290,17 +292,25 @@ function duplicates() {
 
 function reference() {
   let $reference = $(`<div class="task reference"></div>`);
-  let $instruction = sectionHeading(`Write the form reference ${formID()} below.`);
+  let $instruction = sectionHeading(`Enter the form reference ${formID()} into the box below.`);
+
   $reference.append($instruction);
-  $reference.append(`<div>_______________________</div>`);
+  $reference.append(box());
+  // $reference.append(`<div>_______________________</div>`);
 
   return $reference;
 }
 
+function box(text = ``) {
+  return $(`<div class="box-container"><div class="box-padding"></div><div class="box">${text}</div></div>`);
+
+}
+
 function employeeID() {
   let $id = $(`<div class="task id"></div>`);
-  let $instruction = sectionHeading(`Enter your employee ID: ____________`);
+  let $instruction = sectionHeading(`Enter your employee ID in the box below.`);
   $id.append($instruction);
+  $id.append(box());
 
   return $id;
 }

@@ -103,6 +103,19 @@ html, body {
   padding: 0.25em;
 }
 
+.box-container {
+  display: grid;
+}
+
+/* .box-padding {
+  width: 2em;
+} */
+
+.box {
+  border: var(--default-border);
+  height: 2em;
+}
+
 .counting-table {
   grid-template-columns: auto 3em;
 }
