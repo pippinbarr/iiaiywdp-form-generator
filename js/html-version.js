@@ -245,24 +245,15 @@ function stamp() {
 function initial() {
   let $initial;
 
-  if (Math.random() < 0.33) {
-    // And here
-    $initial = $(`<div></div>`);
-    let $initial1 = $(`<div class="task initial"></div>`)
-    let $instruction = sectionHeading(`Initial here: ________`);
-    $initial1.append($instruction);
-    let $initial2 = $(`<div class="task initial"></div>`)
-    let $instruction2 = sectionHeading(`And here: ________`);
-    $initial2.append($instruction2);
-    $initial.append($initial1,$initial2);
-  }
-  else {
-    // Standard initialling
-    $initial = $(`<div class="task initial"></div>`)
-    let $instruction = sectionHeading(`${initialAction} here: ________`);
-    initialAction = `Re-${initialAction.toLowerCase()}`;
-    $initial.append($instruction);
-  }
+  // And here
+  $initial = $(`<div></div>`);
+  let $initial1 = $(`<div class="task initial"></div>`)
+  let $instruction = sectionHeading(`Initial here: ______`);
+  $initial1.append($instruction);
+  let $initial2 = $(`<div class="task initial"></div>`)
+  let $instruction2 = sectionHeading(`And here: ______`);
+  $initial2.append($instruction2);
+  $initial.append($initial1,$initial2);
 
   return $initial;
 }
