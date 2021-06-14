@@ -90,9 +90,8 @@ html, body {
 }
 
 .stamp-area {
-  width: 100%;
   height: 5em;
-  border: 2px dashed black;
+  border: 1px dashed black;
 }
 
 .act {
