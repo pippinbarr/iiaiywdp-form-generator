@@ -8,13 +8,19 @@ let dateModifier = `a`;
 let dates = [`today's`, `tomorrow's`, `yesterday's`];
 
 let technologies;
+let inspirationalQuotes;
+let inspirationalWorkSlogans;
 let positivity;
 let groups;
+let acts;
+let rareActs;
 
 $.getJSON(`assets/data/en.json`, (data) => {
   technologies = data.technologies;
-  positivity = data.inspirationalQuotes;
+  positivity = data.inspirational_quotes.concat(data.inspirational_work_slogans);
   groups = data.groups;
+  acts = data.acts;
+  rareActs = data.rare_acts;
 
   for (let i = 0; i < NUM_FORMS; i++) {
     form();
@@ -44,7 +50,7 @@ function form() {
 }
 
 function title() {
-  let title = $(`<div class="header">Form ${formID()}: ${formPurpose()} ${random(technologies)}</div>`);
+  let title = $(`<div class="title">Form ${formID()}: ${formPurpose()} ${random(technologies)}</div>`);
   return title;
 }
 
@@ -79,7 +85,7 @@ function formPurpose() {
 }
 
 function column(first,$tasks,$page,$form) {
-  const generators = [circleNumber, reference, duplicates, date, checkboxes, highlighter, signature, counting, stamp, initial, read, adding, yesno];
+  const generators = [act, act, circleNumber, reference, duplicates, date, checkboxes, highlighter, signature, counting, stamp, initial, read, adding, yesno];
 
 
   let $col = $(`<div class="column"></div>`);
@@ -114,7 +120,9 @@ function checkboxes() {
   if (selections.length === 0) {
     selections = [random(techs)];
   }
-  let $instruction = sectionHeading(`Select ${selections.join(`, `)}.`);
+  let number = random([`one`, `two`, `three`]);
+  let selection = Math.random() < 0.25 ? `${number} of the options below` : `${selections.join(`, `)}`;
+  let $instruction = sectionHeading(`Select ${selection}.`);
   $checkboxes.prepend($instruction);
 
   return $checkboxes;
@@ -233,10 +241,26 @@ function stamp() {
 }
 
 function initial() {
-  let $initial = $(`<div class="task initial"></div>`);
-  let $instruction = sectionHeading(`${initialAction} here: ________`);
-  initialAction = `Re-${initialAction.toLowerCase()}`;
-  $initial.append($instruction);
+  let $initial;
+
+  if (Math.random() < 0.33) {
+    // And here
+    $initial = $(`<div></div>`);
+    let $initial1 = $(`<div class="task initial"></div>`)
+    let $instruction = sectionHeading(`Initial here: ________`);
+    $initial1.append($instruction);
+    let $initial2 = $(`<div class="task initial"></div>`)
+    let $instruction2 = sectionHeading(`And here: ________`);
+    $initial2.append($instruction2);
+    $initial.append($initial1,$initial2);
+  }
+  else {
+    // Standard initialling
+    $initial = $(`<div class="task initial"></div>`)
+    let $instruction = sectionHeading(`${initialAction} here: ________`);
+    initialAction = `Re-${initialAction.toLowerCase()}`;
+    $initial.append($instruction);
+  }
 
   return $initial;
 }
@@ -288,6 +312,14 @@ function circleNumber() {
   $circleNumber.append(`<div>${"123456789".split(``).join(`&nbsp&nbsp&nbsp&nbsp&nbsp`)}</div>`);
 
   return $circleNumber;
+}
+
+function act() {
+  let $act = $(`<div class="task act"></div>`);
+  let $instruction = sectionHeading(`${Math.random() < 0.1 ? random(rareActs) : random(acts)}`);
+  $act.append($instruction);
+
+  return $act;
 }
 
 function generateParagraph() {
