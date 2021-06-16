@@ -1,8 +1,59 @@
 {
+  "form_title": "Form ##id## : ##purpose## ##technology##",
+  "instruction": {
+    "checkboxes": [
+      "Select ##number## of the options below",
+      "Select ##technology_list##"
+    ],
+    "yesno": "Select ##choice##",
+    "highlight": "Highlight the underlined words",
+    "date": "Write ##modifier## date in the box below",
+    "signature": "Sign here",
+    "counting": [
+      "Write the number of words in the left column into the right column",
+      "Write the number of characters in the left column into the right column"
+    ],
+    "adding": "Add ##number## to the number in the left column and write it in the right column",
+    "stamping": "Stamp below to approve or reject the ##technology## ##group##",
+    "initial1": "Initial here",
+    "initial2": "And here",
+    "reading": "Read the following text closely",
+    "duplicates": "Circle the number of additional copies to make of this form",
+    "duplicate_types": "triplicate / duplicate / single copy",
+    "reference": "Copy the form reference ##form_id## into the box below",
+    "employee_id": "Enter your employee ID below",
+    "circle_number": "Circle the number ##number## below"
+  },
+  "alphabet": "abcdefghijklmnopqrstuvwxyz",
+  "numbers": "0123456789",
+  "yes": "Yes",
+  "no": "No",
+  "any": "any",
+  "spelled_numbers": [
+    "one",
+    "two",
+    "three"
+  ],
+  "dates": [
+    "today's",
+    "tomorrow's",
+    "yesterday's"
+  ],
   "groups": [
     "Working Group",
     "Committee",
     "Review Board"
+  ],
+  "purposes": [
+    "Authorization of",
+    "Committee Report on",
+    "Implications of",
+    "Task Force Report on",
+    "Report on",
+    "Evaluation of",
+    "Rationale for",
+    "Hazards of",
+    "Special Assessment of"
   ],
   "technologies": [
     "3D Displays",

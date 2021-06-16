@@ -1,26 +1,16 @@
 const NUM_FORMS = 100;
 
+let data;
+
 // Tracking repeated instructions
 let duplicatesAction = `filed`;
 let initialAction = `Initial`;
 let signatureAction = `Sign`;
 let dateModifier = `a`;
-let dates = [`today's`, `tomorrow's`, `yesterday's`];
+let dates;
 
-let technologies;
-let inspirationalQuotes;
-let inspirationalWorkSlogans;
-let positivity;
-let groups;
-let acts;
-let rareActs;
-
-$.getJSON(`assets/data/en.json`, (data) => {
-  technologies = data.technologies;
-  positivity = data.inspirational_quotes.concat(data.inspirational_work_slogans);
-  groups = data.groups;
-  acts = data.acts;
-  rareActs = data.rare_acts;
+$.getJSON(`assets/data/en.json`, (language) => {
+  data = language;
 
   for (let i = 0; i < NUM_FORMS; i++) {
     form();
@@ -34,7 +24,7 @@ function form() {
   initialAction = `Initial`;
   signatureAction = `Sign`;
   dateModifier = `a`;
-  dates = [`today's`, `tomorrow's`, `yesterday's`];
+  dates = data.dates;
 
   let $page = $(`<div class="page"></div>`);
   let $form = $(`<div class="form"></div>`);
@@ -50,17 +40,19 @@ function form() {
 }
 
 function title() {
-  let title = $(`<div class="title">Form <span class="title-form-id">${formID()}</span> : ${formPurpose()} ${random(technologies)}</div>`);
-  return title;
+  let title = data.form_title
+    .replace(/##id##/,formID())
+    .replace(/##purpose##/,random(data.purposes))
+    .replace(/##technology##/,technology())
+  let $title = $(`<div class="title">${title}</div>`);
+  return $title;
 }
 
 function formID() {
-  let alphabet = "abcdefghijklmnopqrstuvwxyz";
-  let numbers = "0123456789";
   let length = Math.floor(Math.random() * 10) + 1;
   let id = ``;
   for (let i = 0; i < length; i++) {
-    let char = Math.random() < 0.75 ? random(alphabet) : random(numbers);
+    let char = Math.random() < 0.75 ? random(data.alphabet) : random(data.numbers);
     if (Math.random() < 0.2 && i > 0 && i < length-1) {
       char = `/`;
     }
@@ -70,18 +62,7 @@ function formID() {
 }
 
 function formPurpose() {
-  const purposes = [
-    `Authorization of`,
-    `Committee Report on`,
-    `Implications of`,
-    `Task Force Report on`,
-    `Report on`,
-    `Evaluation of`,
-    `Rationale for`,
-    `Hazards of`,
-    `Special Assessment of`
-  ];
-  return random(purposes);
+  return random(data.purposes);
 }
 
 function column(first,$tasks,$page,$form) {
@@ -107,22 +88,29 @@ function column(first,$tasks,$page,$form) {
   }
 }
 
+function technology() {
+  return random(data.technologies);
+}
+
 function checkboxes() {
   let $checkboxes = $(`<div class="task checkboxes"></div>`);
   let n = 3 + Math.floor(Math.random() * 7);
   let techs = [];
   for (let i = 0; i < n; i++) {
-    let tech = random(technologies);
+    let tech = technology();
     techs.push(tech);
     $checkboxes.append(checkbox(tech,i));
   }
-  let selections = techs.filter(tech => Math.random() < 0.2);
-  if (selections.length === 0) {
-    selections = [random(techs)];
+  let selectedTechs = techs.filter(tech => Math.random() < 0.2);
+  if (selectedTechs.length === 0) {
+    selectedTechs = [random(techs)];
   }
-  let number = random([`one`, `two`, `three`]);
-  let selection = Math.random() < 0.25 ? `${number} of the options below` : `${selections.join(`, `)}`;
-  let $instruction = sectionHeading(`Select ${selection}.`);
+  let selections = selectedTechs.join(`, `);
+
+  let instruction = random(data.instruction.checkboxes)
+    .replace(/##number##/,random(data.spelled_numbers))
+    .replace(/##technology_list##/,selections);
+  let $instruction = sectionHeading(`${instruction}.`);
   $checkboxes.prepend($instruction);
 
   return $checkboxes;
@@ -130,10 +118,12 @@ function checkboxes() {
 
 function yesno() {
   let $yesno = $(`<div class="task yesno"></div>`);
-  $yesno.append(checkbox(`Yes`,1));
-  $yesno.append(checkbox(`No`,2));
-  let selection = random([`Yes`,`No`]);
-  let $instruction = sectionHeading(`Select ${selection}.`);
+  $yesno.append(checkbox(`${data.yes}`,1));
+  $yesno.append(checkbox(`${data.no}`,2));
+  let selection = random([`${data.yes}`,`${data.no}`]);
+  let instruction = data.instruction.yesno
+    .replace(/##choice##/,selection);
+  let $instruction = sectionHeading(`${instruction}.`);
   $yesno.prepend($instruction);
 
   return $yesno;
@@ -148,7 +138,8 @@ function checkbox(label, id) {
 
 function highlighter() {
   let $highlighter = $(`<div class="task highlighter"></div>`);
-  let $instruction = sectionHeading(`Highlight the underlined words.`);
+  let instruction = data.instruction.highlight;
+  let $instruction = sectionHeading(`${instruction}.`);
   $highlighter.append($instruction);
 
   let para = generateParagraph();
@@ -176,9 +167,10 @@ function date() {
   let $date = $(`<div class="task date"></div>`);
   dates.sort((a,b) => Math.random() - 2);
   dateModifier = dates.pop();
-  if (!dateModifier) dateModifier = `any`;
-  let $instruction = sectionHeading(`Write ${dateModifier} date in the box below.`);
-  dateModifier = `another`;
+  if (!dateModifier) dateModifier = data.any;
+  let instruction = data.instruction.date
+    .replace(/##modifier##/,dateModifier);
+  let $instruction = sectionHeading(`${instruction}.`);
   $date.append($instruction);
   $date.append(box(``))
 
@@ -186,25 +178,26 @@ function date() {
 }
 
 function signature() {
-  let $date = $(`<div class="task signature"></div>`);
-  let $instruction = sectionHeading(`${signatureAction} in the box below.`);
-  signatureAction = `Re-${signatureAction.toLowerCase()}`;
-  $date.append($instruction);
-  $date.append(box());
+  let $signature = $(`<div class="task signature"></div>`);
+  let instruction = data.instruction.signature;
+  let $instruction = sectionHeading(`${instruction}.`);
+  $signature.append($instruction);
+  $signature.append(box());
 
-  return $date;
+  return $signature;
 }
 
 function counting() {
   let counting = $(`<div class="task counting"></div>`);
   let target = Math.random() < 0.5 ? `words` : `characters`;
-  let $instruction = sectionHeading(`Write the number of ${target} in the left column into the right column.`);
+  let instruction = random(data.instruction.counting);
+  let $instruction = sectionHeading(`${instruction}.`);
   counting.append($instruction);
 
   let $table = $(`<div class="table counting-table"></div>`);
   let n = Math.floor(Math.random() * 3) + 3;
   for (let i = 0; i < n; i++) {
-    let $row = $(`<div class="table-entry">${random(technologies)}</div><div class="table-entry"></div>`);
+    let $row = $(`<div class="table-entry">${technology()}</div><div class="table-entry"></div>`);
     $table.append($row);
   }
   counting.append($table);
@@ -213,11 +206,12 @@ function counting() {
 }
 
 function adding() {
-  let adding = $(`<div class="task adding"></div>`);
-  let target = Math.random() < 0.5 ? `words` : `characters`;
-  let add = 1 + Math.floor(Math.random() * 5);
-  let $instruction = sectionHeading(`Add ${add} to the number in the left column and write it in the right column.`);
-  adding.append($instruction);
+  let $adding = $(`<div class="task adding"></div>`);
+  let number = 1 + Math.floor(Math.random() * 5);
+  let instruction = data.instruction.adding
+    .replace(/##number##/,number);
+  let $instruction = sectionHeading(`${instruction}.`);
+  $adding.append($instruction);
 
   let $table = $(`<div class="table adding-table"></div>`);
   let n = Math.floor(Math.random() * 3) + 3;
@@ -225,15 +219,17 @@ function adding() {
     let $row = $(`<div class="table-entry">${Math.floor(Math.random() * 100000) + 1}</div><div class="table-entry"></div>`);
     $table.append($row);
   }
-  adding.append($table);
+  $adding.append($table);
 
-  return adding;
+  return $adding;
 }
 
 function stamp() {
   let $stamp = $(`<div class="task stamp"></div>`);
-  let action = `reject or approve`;
-  let $instruction = sectionHeading(`Stamp below to ${action} the ${random(technologies)} ${random(groups)}.`);
+  let instruction = data.instruction.stamping
+    .replace(/##technology##/,technology())
+    .replace(/##group##/,random(data.groups));
+  let $instruction = sectionHeading(`${instruction}.`);
   $stamp.append($instruction);
 
   let $stampArea = $(`<div class="stamp-area"></div>`);
@@ -247,11 +243,11 @@ function initial() {
 
   // And here
   $initial = $(`<div></div>`);
-  let $initial1 = $(`<div class="task initial"></div>`)
-  let $instruction = sectionHeading(`Initial here: ______`);
+  let $initial1 = $(`<div class="task initial"></div>`);
+  let $instruction = sectionHeading(`${data.instruction.initial1}: ______`);
   $initial1.append($instruction);
   let $initial2 = $(`<div class="task initial"></div>`)
-  let $instruction2 = sectionHeading(`And here: ______`);
+  let $instruction2 = sectionHeading(`${data.instruction.initial2}: ______`);
   $initial2.append($instruction2);
   $initial.append($initial1,$initial2);
 
@@ -260,7 +256,8 @@ function initial() {
 
 function read() {
   let $read = $(`<div class="task read"></div>`)
-  let $instruction = sectionHeading(`Read the following text closely.`);
+  let instruction = data.instruction.reading;
+  let $instruction = sectionHeading(`${instruction}.`);
   $read.append($instruction);
 
   let paragraph = generateParagraph();
@@ -271,11 +268,11 @@ function read() {
 
 function duplicates() {
   let $duplicates = $(`<div class="task duplicates"></div>`);
-  let $instruction = sectionHeading(`Circle the number of copies to make of this form when ${duplicatesAction}.`);
-  duplicatesAction = `re${duplicatesAction}`;
+  let instruction = data.instruction.duplicates;
+  let $instruction = sectionHeading(`${instruction}.`);
   $duplicates.append($instruction);
 
-  let $options = $(`<div>triplicate / duplicate / single copy</div>`);
+  let $options = $(`<div>${data.instruction.duplicate_types}</div>`);
   $duplicates.append($options);
 
   return $duplicates;
@@ -283,11 +280,12 @@ function duplicates() {
 
 function reference() {
   let $reference = $(`<div class="task reference"></div>`);
-  let $instruction = sectionHeading(`Copy the form reference ${formID()} into the box below.`);
+  let instruction = data.instruction.reference
+    .replace(/##form_id##/,formID());
+  let $instruction = sectionHeading(`${instruction}.`);
 
   $reference.append($instruction);
   $reference.append(box());
-  // $reference.append(`<div>_______________________</div>`);
 
   return $reference;
 }
@@ -299,7 +297,8 @@ function box(text = ``) {
 
 function employeeID() {
   let $id = $(`<div class="task id"></div>`);
-  let $instruction = sectionHeading(`Enter your employee ID below.`);
+  let instruction = data.instruction.employee_id;
+  let $instruction = sectionHeading(`${instruction}.`);
   $id.append($instruction);
   $id.append(box());
 
@@ -308,7 +307,10 @@ function employeeID() {
 
 function circleNumber() {
   let $circleNumber = $(`<div class="task circle-number"></div>`);
-  let $instruction = sectionHeading(`Circle the number ${Math.floor(Math.random() * 9) + 1} below.`);
+  let number = Math.floor(Math.random() * 9) + 1;
+  let instruction = data.instruction.circle_number
+    .replace(/##number##/,number);
+  let $instruction = sectionHeading(`${instruction}.`);
   $circleNumber.append($instruction);
 
   let numbers = "123456789".split(``);
@@ -318,14 +320,13 @@ function circleNumber() {
     $numbers.append($number);
   }
   $circleNumber.append($numbers);
-  // $circleNumber.append(`<div>${"123456789".split(``).join(`&nbsp&nbsp&nbsp&nbsp&nbsp`)}</div>`);
 
   return $circleNumber;
 }
 
 function act() {
   let $act = $(`<div class="task act"></div>`);
-  let $instruction = sectionHeading(`${Math.random() < 0.1 ? random(rareActs) : random(acts)}`);
+  let $instruction = sectionHeading(`${Math.random() < 0.1 ? random(data.rare_acts) : random(data.acts)}`);
   $act.append($instruction);
 
   return $act;
@@ -335,9 +336,13 @@ function generateParagraph() {
   let number = Math.floor(Math.random() * 3) + 1;
   let result = ``;
   for (let i = 0; i < number; i++) {
-    result += random(positivity) + ` `;
+    result += positivity() + ` `;
   }
   return result;
+}
+
+function positivity() {
+  return random([...data.inspirational_quotes, ...data.inspirational_work_slogans]);
 }
 
 function random(array) {
